@@ -6,9 +6,9 @@ export default function ShowDate() {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setTime(new Date());
-    }, 1000); // Update every 1 second
+    }, 1000);
 
-    // Cleanup the interval when the component unmounts
+
     return () => clearInterval(intervalId);
   }, []);
 

@@ -6,7 +6,6 @@ export default function AddTask() {
   const tasks = useContext(tasksContext);
   const dispatch = useContext(dispatchTasksContext);
   let nextId = tasks.length + 1;
-  // const inputRef = useRef(null);
   function handleNewTaskTitle(e) {
     setNewTaskTitle(e.target.value);
   }
@@ -14,7 +13,6 @@ export default function AddTask() {
   return (
     <div className="add-todo">
       <input
-        // ref={inputRef}
         placeholder="Add a task"
         value={newTaskTitle}
         onChange={handleNewTaskTitle}

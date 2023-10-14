@@ -9,7 +9,10 @@ export function TasksProvider({ ...children }) {
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks"));
     if (savedTasks && savedTasks.length > 0) {
-      dispatch({ type: "init", tasks: savedTasks });
+      const convertedTasks = savedTasks.map(task => ({
+        ...task, dueDate: new Date(task.dueDate)
+      }))
+      dispatch({ type: "init", tasks: convertedTasks });
     }
   }, []);
 
@@ -47,6 +50,7 @@ export function tasksReducer(tasks, action) {
           id: action.id,
           title: action.title,
           text: "",
+          dueDate: new Date(),
           done: false,
           dateCreated: new Date().toLocaleString(undefined, options),
         },
@@ -76,7 +80,7 @@ export function tasksReducer(tasks, action) {
     case "sorted-by-status": {
       return tasks.toSorted((a, b) => a.done + b.done);
     }
-    case "sort-by-date-ascending": { // fix date formatting here or when added new task
+    case "sort-by-date-ascending": {
       return tasks.toSorted((a, b) => a.dateCreated - b.dateCreated);
     }
     case "sort-by-status": {
