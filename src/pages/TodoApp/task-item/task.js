@@ -1,4 +1,4 @@
-import { useState, useContext } from "react";
+import { useState, useContext, useRef } from "react";
 import { dispatchTasksContext } from "../tasksContext";
 
 export default function Task({ task, source, onSelectTask }) {
@@ -9,35 +9,68 @@ export default function Task({ task, source, onSelectTask }) {
     setIsEditing(!isEditing);
   }
 
-  function updateDate(e) {
+  function handleUpdateDate(e) {
+    const input = e.target;
     const newDate = new Date(e.target.value);
+
+    function autoCloseDatePicker(e) {
+      console.log("Outside click:", e.target);
+      console.log("Input:", input);
+      if (e.target !== input) {
+        setIsEditingDate(!isEditingDate);
+      }
+    }
+
     dispatch({
       type: "changed",
       task: { ...task, dueDate: newDate },
     });
-    setIsEditingDate(!isEditingDate);
+    document.addEventListener("click", autoCloseDatePicker, { once: "true" });
   }
 
   return (
     <div className="list-item">
       <TaskCheckboxField task={task} />
-      <TaskDueDate
-        dueDate={task.dueDate}
-        isEditingDate={isEditingDate}
-        setIsEditingDate={setIsEditingDate}
-        onInput={updateDate}
-        source={source}
-      />
-      <TaskTitleField
-        task={task}
-        isEditing={isEditing}
-        onSelectTask={onSelectTask}
-      />
-      <StatusField status={task.done} />
+      <div className="title-and-date flex">
+        <TaskTitleField
+          task={task}
+          isEditing={isEditing}
+          onSelectTask={onSelectTask}
+        />
+        <TaskDueDate
+          dueDate={task.dueDate}
+          isEditingDate={isEditingDate}
+          setIsEditingDate={setIsEditingDate}
+          onInput={handleUpdateDate}
+          source={source}
+        />
+      </div>
+      <StatusField task={task} />
       <DateCreatedField date={task.dateCreated} />
       <EditSaveBtn isEditing={isEditing} onIsEditing={toggleEditing} />
       <DeleteTaskBtn task={task} />
     </div>
+  );
+}
+
+function TaskCheckboxField({ task }) {
+  const dispatch = useContext(dispatchTasksContext);
+  const status = task.status === "Done" ? true : false;
+
+  function handleCheckedTask(e) {
+    const state = e.target.checked ? "Done" : "Not started";
+    dispatch({
+      type: "done-task",
+      task: { ...task, status: state },
+    });
+  }
+
+  return (
+    <input
+      type="checkbox"
+      checked={status}
+      onChange={handleCheckedTask}
+    ></input>
   );
 }
 
@@ -48,6 +81,7 @@ function TaskDueDate({
   onInput,
   source,
 }) {
+  const dateInputRef = useRef(null);
   let dateContent;
 
   if (isEditingDate) {
@@ -56,6 +90,7 @@ function TaskDueDate({
 
     dateContent = (
       <input
+        ref={dateInputRef}
         type="datetime-local"
         name="due-date"
         value={utcString}
@@ -78,29 +113,15 @@ function TaskDueDate({
       .join("");
     const time = `${dueDate.getHours()}:${dueDate.getMinutes()}`;
     dateContent = (
-      <button onClick={() => setIsEditingDate(!isEditingDate)}>
+      <button
+        className="secondary"
+        onClick={() => setIsEditingDate(!isEditingDate)}
+      >
         {source === "original" ? fullDate : `Today ${time}`}
       </button>
     );
   }
   return <div className="due-date">{dateContent}</div>;
-}
-
-function TaskCheckboxField({ task }) {
-  const dispatch = useContext(dispatchTasksContext);
-
-  return (
-    <input
-      type="checkbox"
-      checked={task.done}
-      onChange={(e) =>
-        dispatch({
-          type: "done-task",
-          task: { ...task, done: e.target.checked },
-        })
-      }
-    ></input>
-  );
 }
 
 function TaskTitleField({ task, isEditing, onSelectTask }) {
@@ -127,29 +148,107 @@ function TaskTitleField({ task, isEditing, onSelectTask }) {
   } else {
     toDoContent = (
       <>
-        <div className="list-item-title" onClick={onSelectTask}>
-          <div className="task-title">
-            {task.done ? <s>{task.title}</s> : task.title}
-          </div>
-          {/* <button className="expand-task">
+        <div className="task-title" onClick={onSelectTask}>
+          {task.done ? <s>{task.title}</s> : task.title}
+        </div>
+        {/* <button className="expand-task">
             <span class="material-symbols-outlined">open_in_full</span>
           </button> */}
-        </div>
       </>
     );
   }
   return <div className="list-item-title">{toDoContent}</div>;
 }
 
-function StatusField({ status }) {
+function StatusField({ task }) {
+  const [showStatusOptions, setShowStatusOptions] = useState(false);
+  const dispatch = useContext(dispatchTasksContext);
+  const options = ["Not started", "In progress", "Done"];
+  let statusVariant;
+
+  function formatStatus(string) {
+    return string.toLowerCase().split(" ").join("-");
+  }
+
+  function handleChangeStatus(task, otherStatus) {
+    dispatch({
+      type: "changed",
+      task: { ...task, status: otherStatus },
+    });
+    setShowStatusOptions(false);
+  }
+
+  // if (showStatusOptions) {
+  //   statusVariant = (
+  //     <div className="options flex-col">
+  //       {options.map((item) => (
+  //         <button key={item} onClick={(e) => handleChangeStatus(task, item)}>
+  //           {item}
+  //         </button>
+  //       ))}
+  //     </div>
+  //   );
+  // } else {
+  //   statusVariant = (
+  //     <button
+  //       className={`current ${formatStatus(task.status)}`}
+  //       onClick={() => setShowStatusOptions(true)}
+  //     >
+  //       {task.status}
+  //     </button>
+  //   );
+  // }
+
   return (
-    <div className="status flex-col">
-      {status ? (
-        <span className="done">Done</span>
-      ) : (
-        <span className="not-started">Not started</span>
-      )}
-    </div>
+    <>
+      <div className="status flex-col">
+        <button
+          className={`current ${formatStatus(task.status)}`}
+          onClick={() => setShowStatusOptions(true)}
+        >
+          {task.status}
+        </button>
+        {showStatusOptions && (
+          <div
+            className="options flex-col"
+            onClick={() => setShowStatusOptions(false)}
+          >
+            {options.map((item) => (
+              <button
+                key={item}
+                onClick={(e) => handleChangeStatus(task, item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        )}
+        {/* {statusVariant} */}
+        {/* <div className="current flex-col">
+          <span
+            className={formatStatus(task.status)}
+            onClick={() => setShowStatusOptions(true)}
+          >
+            {task.status}
+          </span>
+        </div>
+        {showStatusOptions && (
+          <div
+            className="options flex-col"
+            onClick={() => setShowStatusOptions(false)}
+          >
+            {options.map((item) => (
+              <button
+                key={item}
+                onClick={(e) => handleChangeStatus(task, item)}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+        )} */}
+      </div>
+    </>
   );
 }
 
@@ -159,7 +258,7 @@ function DateCreatedField({ date }) {
 
 function EditSaveBtn({ isEditing, onIsEditing }) {
   return (
-    <button onClick={onIsEditing}>
+    <button className="secondary" onClick={onIsEditing}>
       <span className="material-symbols-outlined">
         {isEditing ? "save" : "edit"}
       </span>
@@ -171,6 +270,7 @@ function DeleteTaskBtn({ task }) {
   const dispatch = useContext(dispatchTasksContext);
   return (
     <button
+      className="secondary"
       onClick={() =>
         dispatch({
           type: "deleted",

@@ -7,13 +7,19 @@ export default function SortFilterPanel() {
   return (
     <>
       <div className="sort-btns">
-        <button onClick={() => dispatch({ type: "sorted-reverse" })}>
+        <button
+          className="primary"
+          onClick={() => dispatch({ type: "sorted-reverse" })}
+        >
           Sort reverse
         </button>
         {/* <button onClick={() => dispatch({ type: "sort-by-date-ascending" })}>
           Sort by date ascending
         </button> */}
-        <button onClick={() => dispatch({ type: "sort-by-status" })}>
+        <button
+          className="primary"
+          onClick={() => dispatch({ type: "sort-by-status" })}
+        >
           Sort by status
         </button>
       </div>

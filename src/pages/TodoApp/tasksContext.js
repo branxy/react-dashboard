@@ -51,7 +51,7 @@ export function tasksReducer(tasks, action) {
           title: action.title,
           text: "",
           dueDate: new Date(),
-          done: false,
+          status: "Not started",
           dateCreated: new Date().toLocaleString(undefined, options),
         },
         ...tasks,
@@ -78,14 +78,14 @@ export function tasksReducer(tasks, action) {
       return [...tasks].reverse();
     }
     case "sorted-by-status": {
-      return tasks.toSorted((a, b) => a.done + b.done);
+      return tasks.toSorted((a, b) => a.status + b.status);
     }
     case "sort-by-date-ascending": {
       return tasks.toSorted((a, b) => a.dateCreated - b.dateCreated);
     }
     case "sort-by-status": {
       return tasks.toSorted((a, b) =>
-        a.done === b.done ? 0 : a.done ? 1 : -1
+        a.status === b.status ? 0 : a.status ? 1 : -1
       );
     }
     default: {

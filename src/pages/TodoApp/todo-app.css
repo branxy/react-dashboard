@@ -24,17 +24,28 @@
 }
 
 .to-do-app button {
-  outline: none;
   border: none;
-  background-color: #ffffff;
-  border-radius: 20px;
-  padding: 8px 20px;
-  margin-left: 10px;
   cursor: pointer;
 }
 
-.to-do-app button:hover {
-background-color: var(--accent-color);
+.to-do-app button.primary {
+  border-radius: 20px;
+  padding: 8px 20px;
+  outline: none;
+  background-color: #ffffff;
+  flex: 1 0 0;
+}
+
+.to-do-app button.secondary {
+  border-radius: 20px;
+  padding: 4px 12px;
+  outline: none;
+  background-color: #ffffff;
+}
+
+button.primary:hover,
+button.secondary:hover {
+  background-color: var(--accent-color);
 }
 
 /* ADD TODO */
@@ -43,16 +54,22 @@ background-color: var(--accent-color);
   width: 100%;
   background-color: rgb(244, 153, 137);
   padding: 20px;
-  display: flex;
   justify-content: center;
-  align-items: center;
+  gap: 16px;
   margin-bottom: 30px;
 }
 
 .add-todo input {
-  width: 400px;
+  flex: 3 0 0;
+  max-width: 400px;
   height: 36px;
   padding: 4px 6px 2px 6px;
+  border: none;
+  border-radius: 8px;
+}
+
+.add-todo button {
+  max-width: 120px;
 }
 
 .sort-btns button {
@@ -81,7 +98,7 @@ background-color: var(--accent-color);
   display: flex;
   /* justify-content: center; */
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   box-sizing: border-box;
 }
 
@@ -97,11 +114,19 @@ background-color: var(--accent-color);
 }
 
 .list-item input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
+  min-width: 20px;
+  align-self: stretch;
+  /* height: 20px; */
+}
+
+.list-item .title-and-date {
+  flex: 20 0 0;
+  display: flex;
 }
 
 .list-item input[type="text"] {
+  width: 100%;
+  flex: 20 0 0;
   padding: 2px 4px;
   appearance: none;
   outline: none;
@@ -109,13 +134,10 @@ background-color: var(--accent-color);
   border-bottom: 1px solid;
 }
 
-.list-item .due-date {
-  flex-shrink: 0;
-}
-
 .list-item-title {
   /* border: 2px solid; */
   /* display: flex; */
+  width: 100%;
   justify-content: flex-start;
   align-items: center;
   flex: 20 0 0;
@@ -129,31 +151,71 @@ background-color: var(--accent-color);
   display: inline;
 }
 
-.list-item-title .expand-task {
+/* .list-item-title .expand-task {
   padding: 2px 12px;
   font-size: 16px;
-}
+} */
 
-.list-item-title .expand-task span {
+/* .list-item-title .expand-task span {
   font-size: 16px;
+} */
+
+.list-item .due-date {
+  flex: 1 0 auto;
+  max-width: 148px;
 }
 
 .list-item > .status {
-  min-width: 88px;
-  align-items: flex-end;
-  flex-shrink: 0;
+  flex: 1 0 0;
+  /* border: 1px solid; */
+  min-width: 96px;
+  width: 100%;
+  position: relative;
 }
 
-.status .done {
+.current {
+  /* border: 1px solid; */
+  padding: 5px 8px 6px 8px;
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.current:hover {
+  outline: 1px solid;
+}
+
+.current.done {
   background-color: rgb(123, 255, 123);
-  padding: 4px 8px 6px 8px;
-  border-radius: 16px;
 }
 
-.status .not-started {
+.current.in-progress {
+  background-color: rgba(255, 192, 75, 0.637);
+}
+
+.current.not-started {
   background-color: rgb(255, 135, 131);
-  padding: 4px 8px 6px 8px;
-  border-radius: 16px;
+}
+
+.status .options {
+  border: 1px solid;
+  width: 100%;
+  background-color: #ffffff;
+  border-radius: 6px;
+  position: absolute;
+  top: 0px;
+  z-index: 20;
+  cursor: pointer;
+}
+
+.options button {
+  background-color: transparent;
+  border-radius: 6px;
+  width: 100%;
+  padding: 5px 8px 6px 8px;
+}
+
+.options button:hover {
+  background-color: var(--accent-color);
 }
 
 .list-item .date-created {
@@ -224,7 +286,19 @@ background-color: var(--accent-color);
 }
 
 @media screen and (max-width: 1024px) {
-  .original, .tasks-list {
+  .original,
+  .tasks-list {
     padding: 0px 12px;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .title-and-date {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .list-item-title {
+    padding: 0px;
   }
 }

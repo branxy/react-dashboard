@@ -11,7 +11,7 @@ export default function AddTask() {
   }
 
   return (
-    <div className="add-todo">
+    <div className="add-todo flex">
       <input
         placeholder="Add a task"
         value={newTaskTitle}
@@ -29,6 +29,7 @@ export default function AddTask() {
         autoFocus
       ></input>
       <button
+        className="primary"
         disabled={newTaskTitle.length === 0}
         onClick={() => {
           setNewTaskTitle("");

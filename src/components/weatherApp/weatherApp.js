@@ -5,15 +5,15 @@ import ShowDate from "../Date-comp/date-now";
 export default function WeatherApp() {
   const [details, setDetails] = useState(null);
 
-  useEffect(() => {
-    getWeatherData()
-      .then((data) => {
-        setDetails(data.data[0]);
-      })
-      .catch((error) => console.error("Error fetching initial data:", error));
+  // useEffect(() => {
+  //   getWeatherData()
+  //     .then((data) => {
+  //       setDetails(data.data[0]);
+  //     })
+  //     .catch((error) => console.error("Error fetching initial data:", error));
 
-    startFetchingInterval();
-  }, []);
+  //   startFetchingInterval();
+  // }, []);
 
   if (details) {
     const wind = Math.round(details.gust);

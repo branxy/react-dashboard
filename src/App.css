@@ -77,6 +77,11 @@ a {
   position: relative;
 }
 
+.flex {
+  display: flex;
+  align-items: center;
+}
+
 .flex-col {
   display: flex;
   flex-direction: column;
@@ -244,9 +249,9 @@ a {
 
 .text .feels-like {
   display: flex;
+  justify-content: flex-start;
   align-items: center;
-  gap: 2px;
-  align-self: stretch;
+  gap: 4px;
 }
 
 .feels-like .text {
@@ -255,7 +260,6 @@ a {
 }
 
 .feels-like .temp {
-  flex: 2 0 0;
   font-weight: 600;
 }
 
