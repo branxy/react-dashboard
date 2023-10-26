@@ -21,7 +21,7 @@ export default function TaskApp({ source }) {
           <h2>To-do list</h2>
           <TasksProvider>
             <AddTask />
-            <SortFilterPanel />
+            {/* <SortFilterPanel /> */}
             <TasksList />
           </TasksProvider>
         </div>

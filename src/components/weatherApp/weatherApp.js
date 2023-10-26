@@ -1,19 +1,20 @@
 import { useEffect, useState } from "react";
 import { getWeatherData, startFetchingInterval } from "./weatherApi";
 import ShowDate from "../Date-comp/date-now";
+import { Tooltip } from "../Tooltip";
 
 export default function WeatherApp() {
   const [details, setDetails] = useState(null);
 
-  useEffect(() => {
-    getWeatherData()
-      .then((data) => {
-        setDetails(data.data[0]);
-      })
-      .catch((error) => console.error("Error fetching initial data:", error));
+  // useEffect(() => {
+  //   getWeatherData()
+  //     .then((data) => {
+  //       setDetails(data.data[0]);
+  //     })
+  //     .catch((error) => console.error("Error fetching initial data:", error));
 
-    startFetchingInterval();
-  }, []);
+  //   startFetchingInterval();
+  // }, []);
 
   if (details) {
     const wind = Math.round(details.gust);
@@ -25,10 +26,17 @@ export default function WeatherApp() {
       <>
         {details && (
           <>
-            <div className="title-and-date">
-              <h2>Weather</h2>
-              <span className="title">in {details.city_name},</span>
-              <ShowDate />
+            <div className="heading-and-info flex">
+              <div className="title-and-date">
+                <h2>Weather</h2>
+                <span className="title">in {details.city_name},</span>
+                <ShowDate />
+              </div>
+              <Tooltip
+                text={
+                  "Dynamic weather report based on Weatherbit data and Fetch API"
+                }
+              />
             </div>
             <div className="stats flex-col">
               <div className="main-stats">
@@ -86,7 +94,21 @@ export default function WeatherApp() {
       </>
     );
   }
-  return <div>Loading...</div>;
+  return (
+    <>
+      <div className="heading-and-info flex">
+        <div className="title-and-date">
+          <h2>Weather</h2>
+          <span className="title">in Saint-Petersburg,</span>
+          <ShowDate />
+        </div>
+        <Tooltip
+          text={"Dynamic weather report based on Weatherbit data and Fetch API"}
+        />
+      </div>
+      <div>Loading...</div>
+    </>
+  );
 }
 
 function WeatherStatsElement({ img, mainDigit, measure, additionalInfo }) {

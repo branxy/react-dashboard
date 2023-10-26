@@ -92,7 +92,7 @@ button.secondary:hover {
 /* TO DO ITEM */
 .list-item {
   width: 100%;
-  min-width: 460px;
+  min-width: 360px;
   border-bottom: 1px solid;
   padding: 10px 6px;
   display: flex;
@@ -176,23 +176,23 @@ button.secondary:hover {
 .current {
   /* border: 1px solid; */
   padding: 5px 8px 6px 8px;
-  border-radius: 16px;
+  border-radius: 16px !important;
   cursor: pointer;
 }
 
-.current:hover {
+.tasks-list .current:hover {
   outline: 1px solid;
 }
 
-.current.done {
+.tasks-list .current.done {
   background-color: rgb(123, 255, 123);
 }
 
-.current.in-progress {
+.tasks-list .current.in-progress {
   background-color: rgba(255, 192, 75, 0.637);
 }
 
-.current.not-started {
+.tasks-list .current.not-started {
   background-color: rgb(255, 135, 131);
 }
 
@@ -293,12 +293,14 @@ button.secondary:hover {
 }
 
 @media screen and (max-width: 767px) {
+  .list-item-title {
+    padding: 0px;
+  }
+}
+
+@media screen and (max-width: 576px) {
   .title-and-date {
     flex-direction: column;
     align-items: flex-start;
-  }
-
-  .list-item-title {
-    padding: 0px;
   }
 }
