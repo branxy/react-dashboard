@@ -29,8 +29,7 @@ export default function WeatherApp() {
             <div className="heading-and-info flex">
               <div className="title-and-date">
                 <h2>Weather</h2>
-                <span className="title">in {details.city_name},</span>
-                <ShowDate />
+                <span className="title">in {details.city_name}</span>
               </div>
               <Tooltip
                 text={

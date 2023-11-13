@@ -60,7 +60,7 @@ function TaskCheckboxField({ task }) {
   function handleCheckedTask(e) {
     const state = e.target.checked ? "Done" : "Not started";
     dispatch({
-      type: "done-task",
+      type: "changed",
       task: { ...task, status: state },
     });
   }
@@ -111,7 +111,11 @@ function TaskDueDate({
       .toLocaleString(undefined, options)
       .split(",")
       .join("");
-    const time = `${dueDate.getHours()}:${dueDate.getMinutes()}`;
+    console.log({ fullDate });
+    const allMinutes = dueDate.getMinutes();
+    const minutes = allMinutes.length < 2 ? `0${allMinutes}` : allMinutes;
+    const time = `${dueDate.getHours()}:${minutes}`;
+    console.log(time);
     dateContent = (
       <button
         className="secondary"
@@ -164,7 +168,6 @@ function StatusField({ task }) {
   const [showStatusOptions, setShowStatusOptions] = useState(false);
   const dispatch = useContext(dispatchTasksContext);
   const options = ["Not started", "In progress", "Done"];
-  let statusVariant;
 
   function formatStatus(string) {
     return string.toLowerCase().split(" ").join("-");

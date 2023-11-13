@@ -1,17 +1,37 @@
 import { createContext, useReducer, useEffect } from "react";
 
+const options = {
+  year: "numeric",
+  month: "short",
+  day: "2-digit",
+  hour: "2-digit",
+  minute: "2-digit",
+};
+
+const initialTasks = [
+  {
+    id: 1,
+    title: "Example task",
+    text: "",
+    dueDate: new Date(),
+    status: "Not started",
+    dateCreated: new Date().toLocaleString(undefined, options),
+  },
+];
+
 export const tasksContext = createContext(null);
 export const dispatchTasksContext = createContext(null);
 
 export function TasksProvider({ ...children }) {
-  const [tasks, dispatch] = useReducer(tasksReducer, []);
+  const [tasks, dispatch] = useReducer(tasksReducer, initialTasks);
 
   useEffect(() => {
     const savedTasks = JSON.parse(localStorage.getItem("tasks"));
     if (savedTasks && savedTasks.length > 0) {
-      const convertedTasks = savedTasks.map(task => ({
-        ...task, dueDate: new Date(task.dueDate)
-      }))
+      const convertedTasks = savedTasks.map((task) => ({
+        ...task,
+        dueDate: new Date(task.dueDate),
+      }));
       dispatch({ type: "init", tasks: convertedTasks });
     }
   }, []);
@@ -38,13 +58,6 @@ export function tasksReducer(tasks, action) {
       return action.tasks;
     }
     case "added": {
-      const options = {
-        year: "numeric",
-        month: "short",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit",
-      };
       return [
         {
           id: action.id,
@@ -58,13 +71,6 @@ export function tasksReducer(tasks, action) {
       ];
     }
     case "changed": {
-      return tasks.map((t) => {
-        if (t.id === action.task.id) {
-          return action.task;
-        } else return t;
-      });
-    }
-    case "done-task": {
       return tasks.map((t) => {
         if (t.id === action.task.id) {
           return action.task;
